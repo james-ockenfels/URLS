@@ -130,8 +130,8 @@
   <input id="search" type="text" placeholder="Search games...">
 
   <div id="counters">
-    <span> Total Visits: <b id="totalCount">—</b></span>
-    <span> Today: <b id="dailyCount">—</b></span>
+    <span>👀 Total Visits: <b id="totalCount">—</b></span>
+    <span>📅 Today: <b id="dailyCount">—</b></span>
   </div>
 </header>
 
@@ -141,22 +141,28 @@
 </main>
 
 <script>
-  /* ===== Visit Counters ===== */
+  /* ===== Visit Counters using counterapi.dev ===== */
   const namespace = "james-ockenfels-urls";
+
+  // Local date for daily counter (YYYY-MM-DD)
+  const now = new Date();
+  const today = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,"0")}-${String(now.getDate()).padStart(2,"0")}`;
+
   const totalKey = "total-visits";
-  const today = new Date().toISOString().split("T")[0];
   const dailyKey = `daily-${today}`;
 
-  fetch(`https://api.countapi.xyz/hit/${namespace}/${totalKey}`)
+  // Total visits
+  fetch(`https://counterapi.dev/api/${namespace}/${totalKey}`)
     .then(res => res.json())
     .then(data => {
-      document.getElementById("totalCount").textContent = data.value;
+      document.getElementById("totalCount").textContent = data.count;
     });
 
-  fetch(`https://api.countapi.xyz/hit/${namespace}/${dailyKey}`)
+  // Today's visits
+  fetch(`https://counterapi.dev/api/${namespace}/${dailyKey}`)
     .then(res => res.json())
     .then(data => {
-      document.getElementById("dailyCount").textContent = data.value;
+      document.getElementById("dailyCount").textContent = data.count;
     });
 
   /* ===== Game List ===== */
