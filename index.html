@@ -28,7 +28,7 @@
       overflow: hidden;
     }
 
-    /* ===== Search Bar ===== */
+    /* ===== Header ===== */
     header {
       position: sticky;
       top: 0;
@@ -59,9 +59,23 @@
       color: var(--muted);
     }
 
+    /* ===== Counters ===== */
+    #counters {
+      margin-top: 10px;
+      display: flex;
+      gap: 20px;
+      font-size: 0.85rem;
+      color: var(--muted);
+      flex-wrap: wrap;
+    }
+
+    #counters b {
+      color: var(--text);
+    }
+
     /* ===== Game Grid ===== */
     main {
-      height: calc(100vh - 120px);
+      height: calc(100vh - 150px);
       overflow-y: auto;
       padding: 20px;
     }
@@ -97,7 +111,7 @@
       text-align: center;
     }
 
-    /* Scrollbar (Chrome/Edge) */
+    /* Scrollbar */
     main::-webkit-scrollbar {
       width: 10px;
     }
@@ -114,6 +128,11 @@
 <header>
   <h1>🎮 Game Library</h1>
   <input id="search" type="text" placeholder="Search games...">
+
+  <div id="counters">
+    <span> Total Visits: <b id="totalCount">—</b></span>
+    <span> Today: <b id="dailyCount">—</b></span>
+  </div>
 </header>
 
 <main>
@@ -122,6 +141,25 @@
 </main>
 
 <script>
+  /* ===== Visit Counters ===== */
+  const namespace = "james-ockenfels-urls";
+  const totalKey = "total-visits";
+  const today = new Date().toISOString().split("T")[0];
+  const dailyKey = `daily-${today}`;
+
+  fetch(`https://api.countapi.xyz/hit/${namespace}/${totalKey}`)
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById("totalCount").textContent = data.value;
+    });
+
+  fetch(`https://api.countapi.xyz/hit/${namespace}/${dailyKey}`)
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById("dailyCount").textContent = data.value;
+    });
+
+  /* ===== Game List ===== */
   const grid = document.getElementById("grid");
   const searchInput = document.getElementById("search");
   const countText = document.getElementById("count");
