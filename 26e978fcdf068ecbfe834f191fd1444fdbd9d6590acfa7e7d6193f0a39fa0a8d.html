@@ -6,10 +6,36 @@
   <style>
     h1, h2, h3, h4, h5, h6{
       text-align: center;
+        color: red;
 
     }
+body {
+  /* 1. Sets the image and lets it repeat naturally in all directions */
+  background-image: url('EYE.jpg');
+  background-repeat: repeat;
+  background-size: auto; /* Keeps the original size of EYE.jpg */
+
+  /* 2. Slow it down: 60s is very slow, 20s is moderate */
+  animation: slideDown 40s linear infinite;
+
+  margin: 0;
+  min-height: 100vh;
+}
+
+@keyframes slideDown {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    /* 3. Using a pixel value (px) prevents the "giant image" stretching issue.
+       For a perfect loop, change 1000px to the actual height of EYE.jpg. */
+    background-position: 0 1000px;
+  }
+}
+
 
   </style>
+
 </head>
 <body>
 <h1>IT WILL COME.</h1>
