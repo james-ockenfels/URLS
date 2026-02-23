@@ -1,132 +1,544 @@
-<Module>
-
-
-<!-- Ultimate Game Stash file--> 
-<!-- For the regularly updating doc go to https://docs.google.com/document/d/1_FmH3BlSBQI7FGgAQL59-ZPe8eCxs35wel6JUyVaG8Q/ -->
-
-
-<Module>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="x-ua-compatible" content="ie=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>really cool flash game</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Blackjack</title>
+  <link rel="icon" type="image/x-icon" href="../img/FAVICON.png">
+
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
   <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      background: black;
-      overflow: hidden;
-      height: 100%;
-      width: 100%;
+
+        footer {
+            background-color: #1f2833;
+            color: #c5c6c7;
+            text-align: center;
+            padding: 15px;
+            margin: 0;
+        }
+        
+        footer a {
+            color: #66fcf1;
+            margin: 0 10px;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        footer a:hover {
+            color: #45a29e;
+        }
+        footer p {
+            margin: 0;
+        }
+
+    :root{
+      --bg:#f7f7f7;
+      --text:#e8fffb; /* used in felt for contrast */
+      --global-text:#0f2027;
+      --brand:#66fcf1;
+      --brand-2:#45a29e;
+      --header:#1f2833;
+      --card:#ffffff;
+      --muted:#c5c6c7;
+      --shadow:0 8px 30px rgba(0,0,0,.15);
+      --soft:0 4px 12px rgba(0,0,0,.12);
+      --win:#2e7d32; --lose:#c62828; --push:#6d4c41;
     }
-    #flash-container {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: black;
-      overflow: hidden;
+    *{box-sizing:border-box}
+    html,body{height:100%;font-family:Roboto,system-ui,-apple-system,Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--global-text);margin:0}
+header {
+    background-color: #1f2833;
+    color: #66fcf1;
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+header h1 {
+    margin: 0;
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+header nav a {
+    color: #66fcf1;
+    margin-left: 20px;
+    text-decoration: none;
+    font-size: 1.1rem;
+    transition: color 0.3s ease;
+}
+
+header nav a:hover {
+    color: #45a29e;
+}
+    main{max-width:1200px;margin:20px auto;padding:16px;width:100%}
+    
+
+    /* Outer card-like container */
+    .table{background:var(--card);border-radius:14px;box-shadow:var(--shadow);padding:16px}
+
+    /* grid layout */
+    .grid { display: grid; grid-template-columns: 1fr 380px; gap:16px; }
+    .bottom-grid { display: grid; grid-template-columns: 1fr 380px; gap:16px; margin-top:16px; }
+
+    .panel{background:#fff;border-radius:12px;box-shadow:var(--soft);padding:14px}
+    .panel h2, .panel h3{margin:0 0 10px;font-size:1.05rem;color:var(--header)}
+
+    /* Felt area (cards) */
+    .felt{
+      background:radial-gradient(circle at 30% 20%, #2a7b6f 0%, #0f3b35 60%, #0a2a26 100%);
+      border-radius:12px;padding:14px;min-height:240px;color:var(--text);position:relative;overflow:hidden;
+      display:flex;flex-direction:column;gap:12px;
     }
-    .black-box {
-      position: fixed;
-      background: black;
-      z-index: 10;
+    .felt h2{color:#e8fffb}
+    .hand{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;min-height:110px}
+
+    /* card appearance */
+    .card{
+      width:72px;height:100px;border-radius:10px;background:var(--card);border:1px solid #ddd;
+      box-shadow:0 6px 14px rgba(0,0,0,.18);position:relative;padding:8px;display:grid;grid-template-rows:auto 1fr auto;
+      color:var(--header); /* force dark text so it doesn't inherit felt color */
+      font-weight:700; user-select:none;
     }
-    #box-top {
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 0;
+    .card.back{ background: repeating-linear-gradient(45deg,#133, #133 6px, #1f2833 6px, #1f2833 12px); border-color:#0d2228; color:#e8fffb; display:grid; align-items:center; justify-items:center; font-size:1.4rem; }
+    .card .corner{font-size:0.95rem}
+    .card .center{display:grid;place-items:center;font-size:1.5rem}
+    .card.red{ color:#c62828 }
+    .rank { font-weight:800 }
+    .suit { font-size:1.05rem }
+
+    /* controls */
+    .bank{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+    .pill{background:#f0f0f0;padding:10px 12px;border-radius:999px;box-shadow:0 2px 6px rgba(0,0,0,.06)}
+    .controls{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+    button{
+      appearance:none;border:0;border-radius:10px;background:var(--header);color:var(--brand);padding:10px 14px;font-weight:600;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.12);transition:transform .05s ease,opacity .2s
     }
-    #box-bottom {
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: 0;
-    }
-    #box-left {
-      top: 0;
-      left: 0;
-      width: 0;
-      height: 100%;
-    }
-    #box-right {
-      top: 0;
-      right: 0;
-      width: 0;
-      height: 100%;
-    }
-    ruffle-player {
-      width: 100%;
-      height: 100%;
-      background: black;
-      display: block;
+    button:hover{opacity:.95}
+    button:active{transform:scale(.98)}
+    button[disabled]{opacity:.45;cursor:not-allowed}
+    .btn-ghost{background:#eef7f7;color:#0f2027}
+    .btn-danger{background:#b71c1c;color:#fff}
+
+    .settings{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px}
+    .settings label{display:flex;flex-direction:column;gap:6px;font-size:.95rem}
+    .settings input,.settings select{padding:8px;border:1px solid #ddd;border-radius:8px;background:#fff}
+
+    .score{background:rgba(0,0,0,.15);padding:6px 10px;border-radius:999px;font-weight:700;display:inline-flex;gap:8px;align-items:center;color:#fff}
+
+    .status{margin-top:4px;font-weight:700}
+    .status.win{color:var(--win)}
+    .status.lose{color:var(--lose)}
+    .status.push{color:var(--push)}
+
+    .log{max-height:240px;overflow:auto;font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;background:#0f2027;color:#e0ffff;border-radius:12px;padding:12px}
+    .log .line{margin-bottom:8px}
+    .log b{color:var(--brand)}
+
+    .io{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+
+
+    /* responsive */
+    @media (max-width:980px){
+      .grid, .bottom-grid { grid-template-columns: 1fr; }
     }
   </style>
-  <script src="https://cdn.jsdelivr.net/npm/@ruffle-rs/ruffle@0.2.0-nightly.2025.10.2/ruffle.min.js"></script>
 </head>
-<body>
-  <div id="flash-container"></div>
-  <div class="black-box" id="box-top"></div>
-  <div class="black-box" id="box-bottom"></div>
-  <div class="black-box" id="box-left"></div>
-  <div class="black-box" id="box-right"></div>
+
+
+
+  <main>
+    <div class="table">
+
+      <!-- TOP: left = cards, right = bank & controls -->
+      <div class="grid">
+        <!-- TOP LEFT: Felt / cards -->
+        <section class="panel felt" aria-label="Table felt">
+          <h2>Blackjack</h2>
+
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div class="score">Dealer: <span id="dealer-score">0</span></div>
+            <div style="font-size:0.9rem;color:#dff6f3">Dealer rules: <span id="dealer-rule">stands on all 17</span></div>
+          </div>
+          <div id="dealer-hand" class="hand" aria-live="polite"></div>
+
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;">
+            <div class="score">Player: <span id="player-score">0</span></div>
+            <div id="round-status" class="status" aria-live="polite"></div>
+          </div>
+          <div id="player-hand" class="hand" aria-live="polite"></div>
+        </section>
+
+        <!-- TOP RIGHT: Controls / Bank / Settings -->
+        <aside>
+          <div class="panel" aria-label="Bank and controls">
+            <h3>Bank & Bet</h3>
+            <div class="bank" style="align-items:center;">
+              <div class="pill">Bank: $<span id="bank">1000</span></div>
+              <label style="margin-left:auto">
+                Bet amount
+                <input id="bet" type="number" min="1" step="1" value="25">
+              </label>
+            </div>
+
+            <div class="controls">
+              <button id="deal-btn">Deal</button>
+              <button id="hit-btn" disabled>Hit</button>
+              <button id="stand-btn" disabled>Stand</button>
+              <button id="double-btn" disabled>Double</button>
+              <button id="newshoe-btn" class="btn-ghost">New Shoe</button>
+            </div>
+            <div style="margin-top:8px; font-size:0.9rem; color:#666">Blackjack pays 3:2.</div>
+          </div>
+
+          <div class="panel" style="margin-top:12px;">
+            <h3>Settings</h3>
+            <div class="settings">
+              <label> Decks in shoe
+                <select id="decks"><option>1</option><option>2</option><option>4</option><option selected>6</option><option>8</option></select>
+              </label>
+              <label> Dealer hits soft 17
+                <select id="hit-soft-17"><option value="false">No (stands on all 17)</option><option value="true">Yes (hits soft 17)</option></select>
+              </label>
+              <label> Auto-reshuffle at % remaining
+                <input id="penetration" type="number" min="5" max="90" step="5" value="25">
+              </label>
+            </div>
+          </div>
+        </aside>
+      </div>
+
+      <!-- BOTTOM: left = log, right = save/load -->
+      <div class="bottom-grid">
+        <section class="panel">
+          <h3>Round Log</h3>
+          <div id="log" class="log" aria-live="polite"></div>
+        </section>
+
+        <section class="panel">
+          <h3>Save / Load</h3>
+          <div class="io" style="margin-bottom:8px;">
+            <button id="export-btn">Export Save</button>
+            <label for="import-file" class="file-label btn-ghost" style="padding:8px;border-radius:8px;cursor:pointer;">Import Save</label>
+            <input id="import-file" type="file" accept="application/json" style="display:none" />
+            <button id="reset-btn" class="btn-danger">Reset</button>
+          </div>
+          <p style="font-size:0.9rem;color:#666">Save includes bank, settings, and shoe state. Move the JSON between browsers to continue a shoe.</p>
+        </section>
+      </div>
+
+      <footer>Have fun & play responsibly.</footer>
+    </div>
+  </main>
+
   <script>
-    const container = document.getElementById("flash-container");
-    const boxTop = document.getElementById("box-top");
-    const boxBottom = document.getElementById("box-bottom");
-    const boxLeft = document.getElementById("box-left");
-    const boxRight = document.getElementById("box-right");
-    
-    function resizeGame() {
-      const windowWidth = window.innerWidth;
-      const windowHeight = window.innerHeight;
-      const aspectRatio = 5.5 / 3;
-      
-      // Use 95% of available space instead of 100%
-      let width = Math.floor(windowWidth * 1);
-      let height = Math.floor(width / aspectRatio);
-      
-      if (height > windowHeight * 1) {
-        height = Math.floor(windowHeight * 1);
-        width = Math.floor(height * aspectRatio);
-      }
-      
-      container.style.width = `${width}px`;
-      container.style.height = `${height}px`;
-      
-      // Calculate margins
-      const topMargin = (windowHeight - height) / 2;
-      const leftMargin = (windowWidth - width) / 2;
-      
-      // Set black box sizes
-      boxTop.style.height = `${topMargin}px`;
-      boxBottom.style.height = `${topMargin}px`;
-      boxLeft.style.width = `${leftMargin}px`;
-      boxRight.style.width = `${leftMargin}px`;
+  (function(){
+    // Utility selectors
+    const $ = (sel) => document.querySelector(sel);
+    const logEl = $('#log');
+    const storageKey = 'bj-save-v2';
+
+    function log(msg, cls=''){
+      const d = document.createElement('div');
+      d.className = 'line ' + cls;
+      d.innerHTML = msg;
+      logEl.prepend(d);
     }
-    
-    window.addEventListener("resize", resizeGame);
-    window.addEventListener("DOMContentLoaded", () => {
-      resizeGame();
-      const ruffle = window.RufflePlayer?.newest() || window.RufflePlayer?.createPlayer();
-      if (ruffle && container) {
-        const player = ruffle.createPlayer();
-        player.style.width = "100%";
-        player.style.height = "100%";
-        player.style.background = "black";
-        container.appendChild(player);
-        player.load("$1");
-      } else {
-        container.textContent = "Ruffle failed to load."; 
+
+    // Card helpers
+    const suits = ['♠','♥','♦','♣'];
+    const ranks = ['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
+
+    function shuffle(a){
+      for(let i=a.length-1;i>0;i--){
+        const j = Math.floor(Math.random()*(i+1));
+        [a[i], a[j]] = [a[j], a[i]];
       }
-    });
+      return a;
+    }
+
+    function buildDecks(decks=6){
+      const arr = [];
+      for(let d=0; d<decks; d++){
+        for(const s of suits){
+          for(const r of ranks){
+            const value = r==='A'?11:(['J','Q','K'].includes(r)?10:Number(r));
+            arr.push({ r, s, value });
+          }
+        }
+      }
+      return shuffle(arr);
+    }
+
+    function handValue(hand){
+      let total = 0, aces = 0;
+      for(const c of hand){ total += c.value; if(c.r==='A') aces++; }
+      while(total>21 && aces>0){ total -= 10; aces--; }
+      return total;
+    }
+    function isBlackjack(hand){ return hand.length===2 && handValue(hand)===21; }
+    function isSoft(hand){
+      let total = 0, aces = 0;
+      for(const c of hand){ total += c.value; if(c.r==='A') aces++; }
+      while(total>21 && aces>0){ total -= 10; aces--; }
+      return aces>0 && total<=21;
+    }
+
+    // DOM card rendering
+    function makeCardEl(c){
+      const el = document.createElement('div'); el.className='card' + ((c.s==='♥'||c.s==='♦')?' red':'');
+      const top = document.createElement('div'); top.className='corner rank'; top.textContent = c.r;
+      const center = document.createElement('div'); center.className='center suit'; center.textContent = c.s;
+      const bot = document.createElement('div'); bot.className='corner rank'; bot.style.textAlign='right'; bot.textContent = c.r;
+      el.appendChild(top); el.appendChild(center); el.appendChild(bot);
+      return el;
+    }
+    function makeBackEl(){ const el=document.createElement('div'); el.className='card back'; el.textContent=''; return el; }
+
+    // Defaults & state
+    const defaults = { bank:1000, bet:25, decks:6, hitSoft17:false, penetration:25, shoe:[], discard:[] };
+    let G = loadState() || structuredClone(defaults);
+
+    // ensure shoe
+    if(!G.shoe || G.shoe.length===0) G.shoe = buildDecks(G.decks);
+    if(!G.discard) G.discard = [];
+
+    // UI elements
+    const dealerHandEl = $('#dealer-hand'), playerHandEl = $('#player-hand');
+    const dealerScoreEl = $('#dealer-score'), playerScoreEl = $('#player-score');
+    const statusEl = $('#round-status');
+    const bankEl = $('#bank'), betEl = $('#bet'), decksSel = $('#decks'), hitSoftSel = $('#hit-soft-17'), penEl = $('#penetration'), dealerRuleEl = $('#dealer-rule');
+
+    // buttons
+    const dealBtn = $('#deal-btn'), hitBtn = $('#hit-btn'), standBtn = $('#stand-btn'), doubleBtn = $('#double-btn');
+    const newShoeBtn = $('#newshoe-btn'), exportBtn = $('#export-btn'), importFile = $('#import-file'), resetBtn = $('#reset-btn');
+
+    let round = null; // {bet, player:[], dealer:[], paid, done, message}
+
+    // init UI
+    function initUI(){
+      bankEl.textContent = G.bank;
+      betEl.value = G.bet;
+      decksSel.value = String(G.decks);
+      hitSoftSel.value = String(G.hitSoft17);
+      penEl.value = G.penetration;
+      dealerRuleEl.textContent = G.hitSoft17 ? 'hits soft 17' : 'stands on all 17';
+      render();
+    }
+
+    // wiring
+    dealBtn.addEventListener('click', onDeal);
+    hitBtn.addEventListener('click', onHit);
+    standBtn.addEventListener('click', onStand);
+    doubleBtn.addEventListener('click', onDouble);
+    newShoeBtn.addEventListener('click', ()=>{ G.shoe = buildDecks(G.decks); G.discard=[]; saveState(); log('<b>New shoe</b> created.'); render(); });
+    exportBtn.addEventListener('click', onExport);
+    importFile.addEventListener('change', onImport);
+    resetBtn.addEventListener('click', ()=>{ if(confirm('Reset bank and settings?')){ G = structuredClone(defaults); G.shoe = buildDecks(G.decks); G.discard = []; saveState(); render(); log('<b>Reset</b> to defaults.'); } });
+
+    decksSel.addEventListener('change', ()=>{ G.decks = parseInt(decksSel.value,10)||6; G.shoe = buildDecks(G.decks); G.discard=[]; saveState(); render(); dealerRuleEl.textContent = G.hitSoft17 ? 'hits soft 17' : 'stands on all 17'; });
+    hitSoftSel.addEventListener('change', ()=>{ G.hitSoft17 = hitSoftSel.value === 'true'; saveState(); dealerRuleEl.textContent = G.hitSoft17 ? 'hits soft 17' : 'stands on all 17'; });
+    penEl.addEventListener('change', ()=>{ G.penetration = Math.max(5, Math.min(90, parseInt(penEl.value,10)||25)); penEl.value = G.penetration; saveState(); });
+    betEl.addEventListener('change', ()=>{ G.bet = Math.max(1, Math.floor(Number(betEl.value)||25)); betEl.value = G.bet; saveState(); });
+
+    function updateButtons(){
+      const inRound = !!round && !round.done;
+      dealBtn.disabled = inRound;
+      hitBtn.disabled = !inRound;
+      standBtn.disabled = !inRound;
+      doubleBtn.disabled = !inRound || !round || round.player.length !== 2 || (G.bank < round.bet);
+    }
+
+    // drawing logic (with auto-reshuffle)
+    function draw(){
+      if(G.shoe.length === 0){
+        // rebuild from discard if shoe empty
+        G.shoe = shuffle([...G.discard]); G.discard = [];
+        log('<b>Shoe rebuilt</b> from discard.');
+      }
+      const totalCards = 52 * G.decks;
+      const remainingPct = Math.round((G.shoe.length / totalCards) * 100);
+      if(remainingPct <= G.penetration){
+        G.shoe = shuffle([...G.shoe, ...G.discard]); G.discard = [];
+        log(`<b>Shuffle</b> at cut card (${remainingPct}% remaining).`);
+      }
+      return G.shoe.pop();
+    }
+
+    // gameplay
+    function onDeal(){
+      const bet = Math.max(1, Math.floor(Number(betEl.value) || G.bet));
+      if(bet > G.bank){ alert('Bet exceeds bank.'); return; }
+      G.bet = bet; saveState();
+
+      round = { bet, player:[], dealer:[], paid:false, done:false, message:null };
+      round.player.push(draw());
+      round.dealer.push(draw());
+      round.player.push(draw());
+      round.dealer.push(draw());
+
+      // naturals
+      const pBJ = isBlackjack(round.player), dBJ = isBlackjack(round.dealer);
+      if(pBJ || dBJ){ settle(true); return; }
+      render();
+    }
+
+    function onHit(){
+      if(!round || round.done) return;
+      round.player.push(draw());
+      const v = handValue(round.player);
+      if(v > 21){ settle(false, 'Player busts.'); return; }
+      render();
+    }
+
+    function onDouble(){
+      if(!round || round.done) return;
+      if(G.bank < round.bet) return;
+      // immediately stake extra
+      G.bank -= round.bet; round.bet *= 2;
+      round.player.push(draw());
+      if(handValue(round.player) > 21){ settle(false, 'Player busts after double.'); return; }
+      dealerTurn(true);
+    }
+
+    function onStand(){ dealerTurn(false); }
+
+    function dealerTurn(fromDouble=false){
+      if(!round || round.done) return;
+      // reveal then hit based on rules
+      while(true){
+        const v = handValue(round.dealer);
+        const soft = isSoft(round.dealer);
+        if(v < 17){ round.dealer.push(draw()); continue; }
+        if(v === 17 && soft && G.hitSoft17){ round.dealer.push(draw()); continue; }
+        break;
+      }
+      settle(false);
+    }
+
+    // settling the round
+    function settle(immediateNatural=false, overrideMsg=null){
+      if(!round) return;
+      if(!round.paid){ G.bank -= round.bet; round.paid = true; }
+
+      const p = handValue(round.player);
+      const d = handValue(round.dealer);
+
+      let result = 'push', payout = 0, msg = '';
+      const pBJ = isBlackjack(round.player), dBJ = isBlackjack(round.dealer);
+
+      if(immediateNatural){
+        if(pBJ && dBJ){ result = 'push'; payout = round.bet; msg='Both blackjack – push.'; }
+        else if(pBJ){ result='win'; payout = round.bet + Math.floor(round.bet * 1.5); msg='Blackjack! Paid 3:2.'; }
+        else { result='lose'; payout = 0; msg='Dealer blackjack.'; }
+      } else if(overrideMsg){
+        if(p > 21){ result='lose'; payout = 0; msg = overrideMsg; }
+      } else {
+        if(p>21){ result='lose'; payout=0; msg='Player busts.'; }
+        else if(d>21){ result='win'; payout = round.bet*2; msg='Dealer busts.'; }
+        else if(p>d){ result='win'; payout = round.bet*2; msg='Player wins.'; }
+        else if(p<d){ result='lose'; payout=0; msg='Dealer wins.'; }
+        else { result='push'; payout = round.bet; msg='Push.'; }
+      }
+
+      G.bank += payout;
+      round.done = true;
+      round.message = { text: msg + ` (P: ${p} vs D: ${d})`, kind: result };
+
+      // discard cards
+      G.discard.push(...round.player, ...round.dealer);
+      saveState();
+      render();
+      const sym = result==='win'?'✅':result==='lose'?'❌':'➖';
+      log(`${sym} Bet $${round.bet}. ${round.message.text} Bank: $${G.bank}.`, result);
+    }
+
+    // render UI
+    function render(){
+      dealerHandEl.innerHTML = ''; playerHandEl.innerHTML = '';
+      statusEl.textContent = ''; statusEl.className = 'status';
+
+      if(round){
+        const hideHole = !round.done;
+        round.dealer.forEach((c,i)=>{
+          dealerHandEl.appendChild((i===1 && hideHole) ? makeBackEl() : makeCardEl(c));
+        });
+        round.player.forEach(c => playerHandEl.appendChild(makeCardEl(c)));
+
+        dealerScoreEl.textContent = round.done ? handValue(round.dealer) : (round.dealer[0] ? (round.dealer[0].r==='A'?11:(['J','Q','K'].includes(round.dealer[0].r)?10:Number(round.dealer[0].r))) : 0);
+        playerScoreEl.textContent = handValue(round.player);
+
+        if(round.message){
+          statusEl.textContent = round.message.text;
+          statusEl.classList.add(round.message.kind);
+        }
+      } else {
+        dealerScoreEl.textContent = '0'; playerScoreEl.textContent = '0';
+      }
+
+      bankEl.textContent = G.bank;
+      betEl.value = G.bet;
+      decksSel.value = String(G.decks);
+      hitSoftSel.value = String(G.hitSoft17);
+      penEl.value = G.penetration;
+
+      updateButtons();
+    }
+
+    // persistence
+    function saveState(){
+      const save = { v:2, when:new Date().toISOString(), data: { bank:G.bank, bet:G.bet, decks:G.decks, hitSoft17:G.hitSoft17, penetration:G.penetration, shoe:G.shoe, discard:G.discard } };
+      localStorage.setItem(storageKey, JSON.stringify(save));
+    }
+    function loadState(){
+      try{
+        const raw = localStorage.getItem(storageKey);
+        if(!raw) return null;
+        const parsed = JSON.parse(raw);
+        return { ...structuredClone(defaults), ...parsed.data };
+      }catch(e){
+        console.warn('Failed to load save', e);
+        return null;
+      }
+    }
+
+    function onExport(){
+      const payload = localStorage.getItem(storageKey) || JSON.stringify({ v:2, when:new Date().toISOString(), data:defaults });
+      const blob = new Blob([payload], { type:'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = 'blackjack-save.json'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+    }
+
+    async function onImport(ev){
+      const file = ev.target.files[0]; if(!file) return;
+      try{
+        const text = await file.text();
+        const obj = JSON.parse(text);
+        if(!obj || !obj.data) throw new Error('Invalid save file');
+        G = { ...structuredClone(defaults), ...obj.data };
+        if(!G.shoe) G.shoe = buildDecks(G.decks);
+        if(!G.discard) G.discard = [];
+        saveState(); render(); log('<b>Imported</b> save file.');
+      }catch(e){
+        alert('Could not import save: ' + e.message);
+      } finally {
+        ev.target.value = '';
+      }
+    }
+
+    // init
+    initUI();
+    saveState();
+    log('Blackjack ready.');
+
+  })();
   </script>
-    
-    <embed src="https://cdn.jsdelivr.net/gh/bubbls/UGS-file-encryption@1b4d236a0c262a78cd71ea796f519b58d870dc21/blackjack.swf" width="100%" height="100%">
+
 </body>
 </html>
-</Content>
-</Module>

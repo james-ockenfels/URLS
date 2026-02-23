@@ -7435,6 +7435,11 @@
     "file": "clrotate.html"
   },
   {
+    "id": "roulette",
+    "name": "Roulette",
+    "file": "clroulette.html"
+  },
+  {
     "id": "rouletteknight",
     "name": "Rouletteknight",
     "file": "clrouletteknight.html"
