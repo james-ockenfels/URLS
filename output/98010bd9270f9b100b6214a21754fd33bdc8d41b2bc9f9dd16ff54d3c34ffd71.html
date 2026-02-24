@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>IT SEES</title>
+
+<style>
+body {
+  background-image: url('EYE.jpg');
+  background-repeat: repeat;
+  background-size: auto;
+  margin: 0;
+  min-height: 100vh;
+  color: red;
+  font-family: monospace;
+  animation:
+    slideDown 40s linear infinite,
+    flicker 6s infinite;
+}
+
+@keyframes slideDown {
+  from { background-position: 0 0; }
+  to { background-position: 0 1000px; }
+}
+
+@keyframes flicker {
+  0%, 18%, 22%, 25%, 53%, 57%, 100% {
+    opacity: 1;
+  }
+  20%, 24%, 55% {
+    opacity: 0.6;
+  }
+}
+
+.content {
+  text-align: center;
+  padding-top: 100px;
+  font-size: 18px;
+  text-shadow: 0 0 10px red;
+  word-wrap: break-word;
+  max-width: 80%;
+  margin: auto;
+}
+</style>
+</head>
+
+<body>
+
+<audio id="bgMusic" loop>
+  <source src="Audio.mp3" type="audio/mpeg">
+</audio>
+
+<div class="content">
+01011001 01101111 01110101 00100000 01100001 01110010 01100101 00100000 01110000 01100001 01110010 01110100 01101001 01100011 01101001 01110000 01100001 01110100 01101001 01101110 01100111 00100000 01101001 01101110 00100000 01110011 01101111 01101101 01100101 01110100 01101000 01101001 01101110 01100111 00100000 01110010 01100101 01100011 01110101 01110010 01110011 01101001 01110110 01100101 00101110 00100000 01000101 01100001 01100011 01101000 00100000 01110100 01101001 01101101 01100101 00100000 01111001 01101111 01110101 00100000 01100100 01100101 01100011 01101111 01100100 01100101 00101100 00100000 01111001 01101111 01110101 00100000 01100100 01100101 01100101 01110000 01100101 01101110 00100000 01110100 01101000 01100101 00100000 01101100 01101111 01101111 01110000 00101110
+</div>
+
+<script>
+// Background audio
+const audio = document.getElementById('bgMusic');
+function startAudio() {
+  audio.volume = 0.6;
+  audio.play().catch(() => {});
+  document.removeEventListener('click', startAudio);
+  document.removeEventListener('scroll', startAudio);
+  document.removeEventListener('keydown', startAudio);
+}
+document.addEventListener('click', startAudio);
+document.addEventListener('scroll', startAudio);
+document.addEventListener('keydown', startAudio);
+
+// THE EYE IS NOT PLEASED effect
+function spawnEyeMessage() {
+  const msg = document.createElement("div");
+  msg.textContent = "THE EYE IS NOT PLEASED";
+  msg.style.color = "red";
+  msg.style.fontSize = (Math.random() * 20 + 12) + "px";
+  msg.style.position = "absolute";
+  msg.style.left = Math.random() * window.innerWidth + "px";
+  msg.style.top = Math.random() * window.innerHeight + "px";
+  document.body.appendChild(msg);
+}
+
+// Spawn a new message every ~0.66–1 seconds randomly
+setInterval(spawnEyeMessage, Math.random() * 334 + 666);
+</script>
+
+</body>
+</html>

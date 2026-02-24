@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>IT SEES</title>
+  <style>
+    h1, h2, h3, h4, h5, h6, a{
+      text-align: center;
+        color: red;
+
+    }
+body {
+  /* 1. Sets the image and lets it repeat naturally in all directions */
+  background-image: url('EYE.jpg');
+  background-repeat: repeat;
+  background-size: auto; /* Keeps the original size of EYE.jpg */
+
+  /* 2. Slow it down: 60s is very slow, 20s is moderate */
+  animation: slideDown 40s linear infinite, flicker 6s infinite;;
+
+  margin: 0;
+      text-align: center;   /* ← THIS fixes it */
+
+  min-height: 100vh;
+}
+
+@keyframes slideDown {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    /* 3. Using a pixel value (px) prevents the "giant image" stretching issue.
+       For a perfect loop, change 1000px to the actual height of EYE.jpg. */
+    background-position: 0 1000px;
+  }
+}
+@keyframes flicker {
+  0%, 18%, 22%, 25%, 53%, 57%, 100% {
+    opacity: 1;
+  }
+  20%, 24%, 55% {
+    opacity: 0.6;
+  }
+}
+
+
+  </style>
+
+</head>
+<body>
+<audio id="bgMusic" loop>
+  <source src="Audio.mp3" type="audio/mpeg">
+  Your browser does not support the audio element.
+</audio>
+<script>
+    const audio = document.getElementById('bgMusic');
+
+// Function to start the music
+function startAudio() {
+  audio.play().catch(error => {
+    console.log("Autoplay blocked until further interaction:", error);
+  });
+
+  // Remove listeners so they don't trigger every time you click
+  document.removeEventListener('click', startAudio);
+  document.removeEventListener('scroll', startAudio);
+  document.removeEventListener('keydown', startAudio);
+}
+
+// Listen for any common user interaction
+document.addEventListener('click', startAudio);
+document.addEventListener('scroll', startAudio);
+document.addEventListener('keydown', startAudio);
+
+</script>
+
+<h1>INSERT PASSCODE</h1>
+
+<input type="password" id="passwordInput" placeholder="Speak..." style="
+  background:black;
+  color:red;
+  border:1px solid red;
+  padding:10px;
+  text-align:center;
+  font-size:16px;
+">
+
+<br><br>
+
+<button onclick="checkPassword()" style="
+  background:black;
+  color:red;
+  border:1px solid red;
+  padding:8px 20px;
+  cursor:pointer;
+">
+SUBMIT
+</button>
+
+<div id="result"></div>
+
+<script>
+const correctPassword = "Hello is there a password";
+
+function checkPassword() {
+  const userInput = document.getElementById("passwordInput").value;
+  const resultDiv = document.getElementById("result");
+
+  if (userInput === correctPassword) {
+    resultDiv.innerHTML = `
+      <h2>THE EYE OPENS.</h2>
+      <a href="https://james-ockenfels.github.io/URLS/26e978fcdf068ecbfe834f191fd1444fdbd9d6590acfa7e7d6193f0a39fa0a8d.html" target="_blank">
+        THE EYE HAS NOT YET AWOKEN, TRY AGAIN SOON
+      </a>
+    `;
+  } else {
+    punishUser();
+  }
+}
+
+function punishUser() {
+  const resultDiv = document.getElementById("result");
+  resultDiv.innerHTML = "";
+
+  for (let i = 0; i < 100; i++) {
+    const msg = document.createElement("div");
+    msg.textContent = "THE EYE IS NOT PLEASED";
+    msg.style.color = "red";
+    msg.style.fontSize = (Math.random() * 20 + 12) + "px";
+    msg.style.position = "absolute";
+    msg.style.left = Math.random() * window.innerWidth + "px";
+    msg.style.top = Math.random() * window.innerHeight + "px";
+    document.body.appendChild(msg);
+  }
+}
+</script>
+
+</body>

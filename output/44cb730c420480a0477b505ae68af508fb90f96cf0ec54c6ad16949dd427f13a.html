@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>IT SEES</title>
+
+<style>
+body {
+  background-image: url('EYE.jpg');
+  background-repeat: repeat;
+  background-size: auto;
+  margin: 0;
+  min-height: 100vh;
+  color: red;
+  font-family: monospace;
+  animation:
+    slideDown 40s linear infinite,
+    flicker 6s infinite;
+}
+
+@keyframes slideDown {
+  from { background-position: 0 0; }
+  to { background-position: 0 1000px; }
+}
+
+@keyframes flicker {
+  0%, 18%, 22%, 25%, 53%, 57%, 100% {
+    opacity: 1;
+  }
+  20%, 24%, 55% {
+    opacity: 0.6;
+  }
+}
+
+.content {
+  text-align: center;
+  padding-top: 100px;
+  font-size: 18px;
+  text-shadow: 0 0 10px red;
+  word-wrap: break-word;
+  max-width: 80%;
+  margin: auto;
+}
+</style>
+</head>
+
+<body>
+
+<audio id="bgMusic" loop>
+  <source src="Audio.mp3" type="audio/mpeg">
+</audio>
+
+<div class="content">
+59 6f 75 72 20 63 75 72 69 6f 73 69 74 79 20 69 73 20 61 20 62 72 69 64 67 65 2e 20 45 61 63 68 20 63 6c 69 63 6b 20 73 74 72 65 6e 67 74 68 65 6e 73 20 69 74 2e
+</div>
+
+<script>
+// Background audio
+const audio = document.getElementById('bgMusic');
+function startAudio() {
+  audio.volume = 0.6;
+  audio.play().catch(() => {});
+  document.removeEventListener('click', startAudio);
+  document.removeEventListener('scroll', startAudio);
+  document.removeEventListener('keydown', startAudio);
+}
+document.addEventListener('click', startAudio);
+document.addEventListener('scroll', startAudio);
+document.addEventListener('keydown', startAudio);
+
+// THE EYE IS NOT PLEASED effect
+function spawnEyeMessage() {
+  const msg = document.createElement("div");
+  msg.textContent = "THE EYE IS NOT PLEASED";
+  msg.style.color = "red";
+  msg.style.fontSize = (Math.random() * 20 + 12) + "px";
+  msg.style.position = "absolute";
+  msg.style.left = Math.random() * window.innerWidth + "px";
+  msg.style.top = Math.random() * window.innerHeight + "px";
+  document.body.appendChild(msg);
+}
+
+// Spawn a new message every ~0.66–1 seconds randomly
+setInterval(spawnEyeMessage, Math.random() * 334 + 666);
+</script>
+
+</body>
+</html>
